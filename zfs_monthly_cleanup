@@ -1,0 +1,53 @@
+
+!/bin/bash
+
+echo ---------------------------Starting monthly cleaning at `date +%F:%T`------------------------------
+
+current=`date +%Y%m01`
+
+declare -a m_arrray
+
+delpoint=6
+
+current_snapshot=`/sbin/zfs snap -r tank/backup@monthly$current`
+
+numbers_msnaps=`zfs list -t snapshot -r /tank/backup | grep monthly | wc -l`
+
+echo "create a monthly snapshot at $current"
+
+echo -e "current monthly snapshot are:"
+
+for ms in `zfs list -t snapshot -r tank/backup | grep monthly | cut -d " " -f1`;
+                do
+                        echo  $ms  
+                done
+
+
+
+if [ $numbers_msnaps -gt $delpoint ];
+
+then
+
+        x=0
+
+        a=$(($numbers_msnaps - $delpoint))
+
+
+        m_array=(`zfs list -t snapshot -r /tank/backup -o name, -s creation | grep monthly`)
+
+        while [ $x -le $(( $a-1 )) ]
+                do
+                        echo "zfs destroy $[x]"
+                        echo "zfs destroy snapshot"  ${m_array[$x]}
+                        x=$(( $x+1 ))
+                done
+
+else
+
+        echo "nothing to do for cleaning"
+
+fi
+
+
+echo -e ----------------------------Finish monthly cleaning up at `date +%F:%T`-------------------------"\n"
+~                                                                                                                    
