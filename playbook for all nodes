@@ -1,16 +1,14 @@
 ---
 - name: set up backup nodes
-  hosts: all
+  hosts: nodes
   remote_user: henry
   become: yes
 
   tasks:
   - name: a local user backup-user
-    ansible.buitin.user:
+    ansible.builtin.user:
       name: backup-user
       comment: backup-user
-
-  tasks:
   - name: Add public keys to Authorize file
     ansible.builtin.copy:
       src: /home/henry/aplay/files/authorized_keys
@@ -18,8 +16,6 @@
       owner: backup-user
       group: backup-user
       mode: '0644'
-
-  tasks:
   - name: temple a file to /etc/sudoer.d
     ansible.builtin.template:
       src: /home/henry/aplay/files/backup-user
@@ -27,6 +23,3 @@
       owner: root
       group: root
       mode: '0600'
-~                                                                                                                                                                                                                                                                                                                                                                                   
-~                                                                                                                                                                                                                                                                                                                                                                                   
-~                            
